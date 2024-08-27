@@ -1,0 +1,11 @@
+table1:      table2:              innerjoin:                        leftjoin(table 2 on 1):                                 outerjoin:
+[45,1,2,3]          [44,1,2,3]              [66,4,5,6,1,8,7]                [45,1,2,3,nan, nan, nan]                 [45,1,2,3,nan, nan, nan] 
+[66,4,5,6]          [66,1,8,7]                                              [66,4,5,6,1,8,7]                         [66,4,5,6,1,8,7]
+[99,7,8,9]          [94,2,4,5]                                              [99,7,8,9,nan,nan,nan]                   [99,7,8,9,nan,nan,nan]
+                                                                                                                     [44,nan,nan.nan,1,2,3]
+                                                                                                                     [94,nan,nan.nan,2,4,5]  
+
+Left Join Table 1 on 2
+[44,1,2,3,nan, nan, nan]
+[66,1,8,7, 4, 5, 5] 
+[94,2,4,5,nan, nan, nan] 

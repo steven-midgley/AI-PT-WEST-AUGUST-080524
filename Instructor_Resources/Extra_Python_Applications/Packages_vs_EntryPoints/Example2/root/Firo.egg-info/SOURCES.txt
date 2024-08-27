@@ -1,0 +1,8 @@
+pyproject.toml
+Firo.egg-info/PKG-INFO
+Firo.egg-info/SOURCES.txt
+Firo.egg-info/dependency_links.txt
+Firo.egg-info/entry_points.txt
+Firo.egg-info/top_level.txt
+entry_point/__init__.py
+entry_point/day_extractor.py
