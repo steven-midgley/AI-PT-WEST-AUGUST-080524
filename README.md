@@ -9,7 +9,7 @@
 
 * [GitLab](https://zoom.us/rec/share/jVyJIva85n9JEn_ay0sbl9Yoa3RYwuWpY5LiYU4loXLCf7x54DpEY0hgrOAfGU8B.YwMtILEWTyxSDSmB?startTime=1664669201000)
 
-* [ATM Activity](https://zoom.us/rec/share/jClmBy6CWbeNSu6R9ZRwKWMMb5-3WutbuYwcmJBmu94PZ5MX4Jt7THzg6HdmT4o.MPrZh98_XpyqfP-J?startTime=1664667713000)
+* [ATM Activity](https://zoom.us/rec/play/i1mS9tEF5mD7b8aiTuAsZa-kCe_JhDOQF-EpqQl2-1JSclNEPJHfZfAIcMXIGdSgLCf2xgJx2jL3AZ6s.74MfWK9m415YilJ-?autoplay=true&startTime=1724799882000)
 
 * [GitHub, Challenges, Readme](https://zoom.us/rec/share/vCbsxgKalwlcHw5MkfWTAk5usZlo9-1lsy8IIdJc-i8niyNEN3R7n6iCTSI4EVVm.Tv3hmeKWncn7M68r?startTime=1664669495000)
 
