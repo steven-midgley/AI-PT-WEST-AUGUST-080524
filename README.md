@@ -35,3 +35,5 @@ A summary of the article basically is:
 In every enviroment you activate you need to run the following two commands:
 * `conda install ipykernel`
 * `ipython kernel install --user --name=new-env` where `new-env` is you enviroment name (i.e. dev or whatever you called it)
+
+test
