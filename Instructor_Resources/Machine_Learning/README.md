@@ -84,6 +84,32 @@
       3. 1.0 means perfect prediction
       4. 0.0 means model predicts as well as the mean
    ```
+
+   #### Scaling General Benchmark
+   ```python
+   StandardScaler (standardization) is best for:
+
+   1.Linear Regression
+   2.Logistic Regression
+   3.Neural Networks
+   4.Gradient Descent-based algorithms
+   5.Support Vector Machines (SVM)
+
+   This is because these algorithms assume the input variables are normally distributed and/or use gradient descent optimization. Standardization maintains zero mean and unit variance while preserving the shape of the original distribution.
+   MinMaxScaler (normalization) is better for:
+
+   1.Neural Networks (when you need bounded outputs)
+   2.k-Nearest Neighbors (KNN)
+   3.Neural Networks specifically using sigmoid/tanh activation functions
+   4.Algorithms that are sensitive to magnitudes but not distributions
+
+   Some general rules:
+
+   Use StandardScaler when you dont know the distribution of data
+   Use MinMaxScaler when you know your data has a bounded range
+   Some algorithms like Decision Trees and Random Forests dont require scaling at all
+   ```
+
    #### Remove Redundant Features (Pre-Modelling)
 
    ```python
@@ -140,6 +166,98 @@
                uninformative_columns.append(column)  
       return uninformative_columns 
    ```
+
+   #### Calculate Gini Score
+   ```python
+   import numpy as np
+   from collections import Counter
+   import pandas as pd
+
+   def calculate_gini(y):
+      if len(y) == 0:
+         return 0
+      counts = Counter(y)
+      total = len(y)
+      proportions = [count/total for count in counts.values()]
+      return 1 - sum(p*p for p in proportions)
+
+   def find_best_split(X, y, feature, verbose=False):
+      """
+      Find best split point for a feature by checking between all adjacent values.
+      """
+      # Convert to numpy array and sort
+      x_values = X[feature].values
+      sort_idx = np.argsort(x_values)
+      sorted_x = x_values[sort_idx]
+      sorted_y = np.array(y)[sort_idx]
+      
+      # Get unique values in sorted order
+      unique_vals = np.unique(sorted_x)
+      
+      if len(unique_vals) == 1:
+         return None, 0
+      
+      # Calculate split points between adjacent unique values
+      split_points = [(unique_vals[i] + unique_vals[i+1])/2 
+                     for i in range(len(unique_vals)-1)]
+      
+      if verbose:
+         print(f"\nFeature '{feature}':")
+         print(f"Sorted unique values: {unique_vals}")
+         print(f"Possible split points: {split_points}")
+      
+      best_gain = -float('inf')
+      best_split = None
+      
+      parent_gini = calculate_gini(sorted_y)
+      
+      for split in split_points:
+         left_mask = sorted_x <= split
+         y_left = sorted_y[left_mask]
+         y_right = sorted_y[~left_mask]
+         
+         if len(y_left) == 0 or len(y_right) == 0:
+               continue
+               
+         n_left = len(y_left)
+         n_right = len(y_right)
+         n_total = n_left + n_right
+         
+         weighted_child_gini = (
+               (n_left/n_total) * calculate_gini(y_left) +
+               (n_right/n_total) * calculate_gini(y_right)
+         )
+         
+         gain = parent_gini - weighted_child_gini
+         
+         if verbose:
+               print(f"\nTrying split at {split:.2f}:")
+               print(f"Left node: {sorted_x[left_mask]} → labels: {y_left}")
+               print(f"Right node: {sorted_x[~left_mask]} → labels: {y_right}")
+               print(f"Gain: {gain:.4f}")
+         
+         if gain > best_gain:
+               best_gain = gain
+               best_split = split
+      
+      return best_split, best_gain
+   # Example usage:
+   if __name__ == "__main__":
+      # Sample data
+      
+      # Evaluate all features to find the best split
+      feature_splits = {
+         feature: find_best_split(X, y, feature, verbose=False)
+         for feature in X.columns
+      }
+      
+      best_feature = max(feature_splits.items(), 
+                        key=lambda x: x[1][1])  # x[1][1] is the gain
+      print(f"Best feature: {best_feature[0]} "
+            f"at split {best_feature[1][0]:.2f} "
+            f"with gain {best_feature[1][1]:.4f}")
+   ```
+
    #### ML Pipeline
 
    ```python
