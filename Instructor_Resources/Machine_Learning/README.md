@@ -174,12 +174,27 @@
    import pandas as pd
 
    def calculate_gini(y):
+      '''
+      Gini impurity value, which ranges from 0 to (1 - 1/C), where C is the number of classes.
+      '''
       if len(y) == 0:
          return 0
       counts = Counter(y)
       total = len(y)
       proportions = [count/total for count in counts.values()]
       return 1 - sum(p*p for p in proportions)
+
+   def calculate_normalized_gini(y):
+      '''
+      max_gini is calculated as (num_classes - 1) / num_classes, which is the maximum possible Gini impurity for the given number of classes.
+      This ensures the Gini index is always between 0 and 1, with 0 indicating perfect purity and 1 indicating maximum impurity.
+      '''
+      gini = calculate_gini(y)
+      unique_values = set(y)
+      if len(unique_values) == 1:
+         return 0
+      max_gini = (len(unique_values) - 1) / len(unique_values)
+      return gini / max_gini
 
    def find_best_split(X, y, feature, verbose=False):
       """
@@ -209,7 +224,7 @@
       best_gain = -float('inf')
       best_split = None
       
-      parent_gini = calculate_gini(sorted_y)
+      parent_gini = calculate_normalized_gini(sorted_y)
       
       for split in split_points:
          left_mask = sorted_x <= split
@@ -224,8 +239,8 @@
          n_total = n_left + n_right
          
          weighted_child_gini = (
-               (n_left/n_total) * calculate_gini(y_left) +
-               (n_right/n_total) * calculate_gini(y_right)
+               (n_left/n_total) * calculate_normalized_gini(y_left) +
+               (n_right/n_total) * calculate_normalized_gini(y_right)
          )
          
          gain = parent_gini - weighted_child_gini
@@ -234,7 +249,7 @@
                print(f"\nTrying split at {split:.2f}:")
                print(f"Left node: {sorted_x[left_mask]} → labels: {y_left}")
                print(f"Right node: {sorted_x[~left_mask]} → labels: {y_right}")
-               print(f"Gain: {gain:.4f}")
+               print(f"Normalized Gini gain: {gain:.4f}")
          
          if gain > best_gain:
                best_gain = gain
@@ -256,6 +271,66 @@
       print(f"Best feature: {best_feature[0]} "
             f"at split {best_feature[1][0]:.2f} "
             f"with gain {best_feature[1][1]:.4f}")
+   ```
+
+   #### Custom Metric HyperParam Tuning
+   ```
+   from sklearn.model_selection import GridSearchCV
+   param_grid = {
+      'n_neighbors': [1, 3, 5, 7, 9, 11, 13, 15, 17, 19],
+      'weights': ['uniform', 'distance'],
+      'leaf_size': [10, 50, 100, 500]
+   }
+   grid_clf = GridSearchCV(grid_tuned_model, 
+                        param_grid, 
+                        verbose=3, 
+                        refit='average_precision',
+                        scoring={
+                              'accuracy': 'accuracy',
+                              'precision': 'precision',
+                              'recall': 'recall',
+                              'f1': 'f1',
+                              'average_precision': 'average_precision'
+                        }
+                        )
+   from sklearn.metrics import make_scorer
+   def custom_accuracy(y_true, y_pred):
+      # Example: weighted accuracy that penalizes false positives more
+      fp = sum((y_pred == 1) & (y_true == 0))
+      fn = sum((y_pred == 0) & (y_true == 1))
+      tp = sum((y_pred == 1) & (y_true == 1))
+      tn = sum((y_pred == 0) & (y_true == 0))
+      
+      return (tp + tn) / (tp + tn + fp * 1.5 + fn)
+
+   # Create custom scorer
+   custom_scorer = make_scorer(custom_accuracy)
+   grid_clf = GridSearchCV(grid_tuned_model, 
+                        param_grid, 
+                        verbose=3, 
+                        refit=custom_scorer,
+                        scoring=custom_scorer
+                        )     
+   COMMON_METRICS = {
+      'Classification': [
+         'accuracy',          # Overall accuracy
+         'balanced_accuracy', # Balanced accuracy for imbalanced datasets
+         'f1',               # F1 score (binary)
+         'f1_micro',         # F1 score (multiclass micro-averaged)
+         'f1_macro',         # F1 score (multiclass macro-averaged)
+         'precision',        # Precision score
+         'recall',           # Recall score
+         'roc_auc',         # ROC AUC score
+         'average_precision' # Average precision score
+      ],
+      'Regression': [
+         'r2',              # R-squared score
+         'neg_mean_squared_error',     # Negative mean squared error
+         'neg_root_mean_squared_error', # Negative root mean squared error
+         'neg_mean_absolute_error',     # Negative mean absolute error
+         'neg_median_absolute_error'    # Negative median absolute error
+      ]
+   }                                    
    ```
 
    #### ML Pipeline
