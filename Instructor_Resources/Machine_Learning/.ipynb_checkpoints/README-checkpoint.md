@@ -513,16 +513,8 @@
    importances = importances.sort_values(by='Normalized_Importance', ascending=False)  
    ```
    
+
 ### Applications:
-* [Text to Image :: Diffusion Models :: Neural Networks](https://lexica.art/?)
-* [Another Text to Image :: Diffusion Models :: Neural Networks](https://huggingface.co/spaces/stabilityai/stable-diffusion)
-* [Text to Text :: Recurrent Neural Networks :: Neural Networks](https://typeset.io/papers/)
-* [Text to Voice + Text to Video :: Reccurent & Convolutional Neural Network :: Neural Networks](https://www.synthesia.io/features/custom-avatar)
-* [Text to Actions::Neural Networks](https://openai.com/blog/chatgpt/)
-* [Image to Text](https://huggingface.co/blog/idefics2)
-* [Data Science Agent](https://labs.google.com/code/dsa?view=readme)
-* [Text to SQL](https://ai.google.dev/gemini-api/tutorials/sql-talk)
-* [WebSearch](https://www.blackbox.ai/docs?share-code=GA719xy)
 
 
 ### Deep Learning
@@ -532,7 +524,7 @@
 
 
 ### Large Language Models
-[LLMops Database](https://www.zenml.io/llmops-database)
+
 
 ### LLM Explainability
 
