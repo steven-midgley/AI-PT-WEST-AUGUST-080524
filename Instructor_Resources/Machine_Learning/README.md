@@ -512,7 +512,105 @@
    # Sort the DataFrame by importance  
    importances = importances.sort_values(by='Normalized_Importance', ascending=False)  
    ```
-   
+
+### Deep Learning
+* [Neural Network Visualization](https://alexlenail.me/NN-SVG/index.html)
+   ### Installation Guides for GPU Usage:
+      Tensorflow:
+      ```markdown
+      https://www.tensorflow.org/install/pip#windows-native
+
+      The instructions you shared from the TensorFlow website are for creating a new environment with conda, installing the correct versions of CUDA and cuDNN for TensorFlow, and then installing a version of TensorFlow that is compatible with these. Its important to note that it specifies to install a version of TensorFlow less than 2.11, as versions above 2.10 are not supported on the GPU on Windows Native.
+
+      If you follow these instructions, it should install everything you need to run TensorFlow with GPU support. The final command is a quick check to ensure TensorFlow can detect your GPU.
+
+      Here are the steps: Open your terminal or Anaconda prompt. Create a new conda environment (optional: but recommended to avoid package conflicts). You can do this with conda create -n tf_gpu_env python=3.8, then activate it with conda activate tf_gpu_env. Run the command to install the correct versions of CUDA and cuDNN:
+
+      conda install -c conda-forge cudatoolkit=11.2 cudnn=8.1.0
+
+      Install a compatible version of TensorFlow:
+      python -m pip install "tensorflow<2.11"
+
+      Verify the installation:
+      python -c "import tensorflow as tf; print(tf.config.list_physical_devices('GPU'))"
+
+      This should return a list with your GPU if everything is installed correctly.
+      ```
+      Pytorch:
+      ```markdown
+      # conda install -c conda-forge cudatoolkit=11.2 cudnn=8.1.0  
+      pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
+      https://pytorch.org/get-started/locally/
+      ```
+   #### Definitions:
+      Optimizers:
+         * ADAM: Adaptive Moment Estimation: The Adam optimizer, short for “Adaptive Moment Estimation,” is an iterative optimization algorithm used to minimize the loss function during the training of neural networks. Adam can be looked at as a combination of RMSprop and Stochastic Gradient Descent with momentum.
+         * SGD: Stochastic Gradient Descent: The SGD optimizer, short for “Stochastic Gradient Descent,” is an iterative optimization algorithm used to minimize the loss function during the training of neural networks. SGD is a simple and effective optimization algorithm that updates the model parameters based on the gradient of the loss function with respect to the parameters.
+         * RMSprop: Root Mean Square Propagation: The RMSprop optimizer, short for “Root Mean Square Propagation,” is an iterative optimization algorithm used to minimize the loss function during the training of neural networks. RMSprop is a variant of the AdaGrad optimizer that uses a moving average of the squared gradients to update the model parameters.
+         * Adamax: Adaptive Moment Estimation with Infinity Norm: The Adamax optimizer, short for “Adaptive Moment Estimation with Infinity Norm,” is an iterative optimization algorithm used to minimize the loss function during the training of neural networks. Adamax is a variant of the Adam optimizer that uses the infinity norm instead of the L2 norm to update the model parameters.
+         AdamW: Adam with Weight Decay Regularization: The AdamW optimizer, short for “Adam with Weight Decay Regularization,” is an iterative optimization algorithm used to minimize the loss function during the training of neural networks. AdamW is a variant of the Adam optimizer that uses weight decay regularization to prevent overfitting.
+         * Nadam: Nesterov-accelerated Adaptive Moment Estimation: The Nadam optimizer, short for “Nesterov-accelerated Adaptive Moment Estimation,” is an iterative optimization algorithm used to minimize the loss function during the training of neural networks. Nadam is a variant of the Adam optimizer that uses the Nesterov momentum method to update the model parameters.
+         * AdaDelta: Adaptive Delta: The AdaDelta optimizer, short for “Adaptive Delta,” is an iterative optimization algorithm used to minimize the loss function during the training of neural networks. AdaDelta is a variant of the AdaGrad optimizer that uses a moving average of the squared gradients to update the model parameters.
+
+   #### Miscellaneous Code:
+    ```python
+   import tensorflow as tf
+   tf.keras.backend.clear_session()
+   tf.keras.backend.clear_session()
+   np.random.seed(42)
+   tf.random.set_seed(42)
+
+   gpu_devices = tf.config.list_physical_devices('GPU')
+
+   if gpu_devices:
+      print('Using GPU')
+      for gpu in gpu_devices[0:2]:
+         tf.config.experimental.set_memory_growth(gpu, True)
+   else:
+      print('Using CPU')
+      tf.config.optimizer.set_jit(True)
+      print('used: {}% free: {:.2f}GB'.format(psutil.virtual_memory().percent, float(psutil.virtual_memory().free)/1024**3))#@ 
+
+   gpus = tf.config.list_physical_devices('GPU')
+   if gpus:
+   # Restrict TensorFlow to only use some GPUs
+      try:
+         tf.config.experimental.set_visible_devices(gpus[0:2], 'GPU')
+         logical_gpus = tf.config.experimental.list_logical_devices('GPU')
+         print(len(gpus), "Physical GPU,", len(logical_gpus), "Logical GPUs")
+      except RuntimeError as e:
+      # Visible devices must be set at program startup
+         print(e)
+
+   # fine tuning with Grid Search
+   def build_classifier(optimizer):
+      # first step: create a Sequential object, as a sequence of layers. B/C NN is a sequence of layers.
+      nn_model = Sequential()
+      # add the first hidden layer
+      nn_model.add(Dense(units=5,kernel_initializer='glorot_uniform',
+                     activation = 'relu'))
+      # add the second hidden layer
+      nn_model.add(Dense(units=5,kernel_initializer='glorot_uniform',
+                     activation = 'relu'))
+      # add the output layer
+      nn_model.add(Dense(units=1,kernel_initializer='glorot_uniform',
+                     activation = 'sigmoid'))
+      # compiling the NN
+      nn_model.compile(optimizer=optimizer,loss='binary_crossentropy',metrics=['accuracy'])
+      return nn_model
+
+   new_classifier = KerasClassifier(build_fn=build_classifier)
+
+   # create a dictionary of hyper-parameters to optimize
+   parameters = {'batch_size':[25,32], 'nb_epoch':[1,2,10],'optimizer':['adam','rmsprop','sgd']}
+   grid_search = GridSearchCV(estimator = new_classifier, param_grid = parameters, scoring = 'accuracy', cv=10)
+   grid_search = grid_search.fit(scaled_train[int(0.5*len(scaled_train)):],y_train_select.values[int(0.5*len(scaled_train)):])
+   # decreased train size for faster results. This is one way to get results faster if runing short on time
+   best_parameters = grid_search.best_params_ 
+   best_accuracy = grid_search.best_score_
+
+    ```
+
 ### Applications:
 * [Text to Image :: Diffusion Models :: Neural Networks](https://lexica.art/?)
 * [Another Text to Image :: Diffusion Models :: Neural Networks](https://huggingface.co/spaces/stabilityai/stable-diffusion)
@@ -524,8 +622,6 @@
 * [Text to SQL](https://ai.google.dev/gemini-api/tutorials/sql-talk)
 * [WebSearch](https://www.blackbox.ai/docs?share-code=GA719xy)
 
-
-### Deep Learning
 
 
 ### NLP
