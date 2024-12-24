@@ -515,7 +515,7 @@
 
 ### Deep Learning
 * [Neural Network Visualization](https://alexlenail.me/NN-SVG/index.html)
-   ### Installation Guides for GPU Usage:
+   #### Installation Guides for GPU Usage:
       Tensorflow:
       ```markdown
       https://www.tensorflow.org/install/pip#windows-native
@@ -551,6 +551,81 @@
          AdamW: Adam with Weight Decay Regularization: The AdamW optimizer, short for “Adam with Weight Decay Regularization,” is an iterative optimization algorithm used to minimize the loss function during the training of neural networks. AdamW is a variant of the Adam optimizer that uses weight decay regularization to prevent overfitting.
          * Nadam: Nesterov-accelerated Adaptive Moment Estimation: The Nadam optimizer, short for “Nesterov-accelerated Adaptive Moment Estimation,” is an iterative optimization algorithm used to minimize the loss function during the training of neural networks. Nadam is a variant of the Adam optimizer that uses the Nesterov momentum method to update the model parameters.
          * AdaDelta: Adaptive Delta: The AdaDelta optimizer, short for “Adaptive Delta,” is an iterative optimization algorithm used to minimize the loss function during the training of neural networks. AdaDelta is a variant of the AdaGrad optimizer that uses a moving average of the squared gradients to update the model parameters.
+
+      Loss Functions:
+         * Binary Crossentropy: The Binary Crossentropy loss function, short for “Binary Cross-Entropy,” is a loss function used to minimize the loss function during the training of neural networks. Binary Crossentropy is a variant of the Cross-Entropy loss function that is used to minimize the loss function during the training of neural networks.
+         * Categorical Crossentropy: The Categorical Crossentropy loss function, short for “Categorical Cross-Entropy,” is a loss function used to minimize the loss function during the training of neural networks. Categorical Crossentropy is a variant of the Cross-Entropy loss function that is used to minimize the loss function during the training of neural networks.
+         * sparse_categorical_crossentropy: The sparse_categorical_crossentropy loss function is used when your classes are mutually exclusive, i.e., each sample belongs exactly to one class. In other words, it's used for multi-class classification where each instance can only belong to one class out of many classes, and the classes are represented as integers (0, 1, 2, ..., n).
+         In our case today case, we will have two output neurons with a sigmoid activation function, which usually suggests a binary or multi-label problem. However, by using sparse_categorical_crossentropy, we will be treating it as a 2-class classification problem, where each sample can only belong to one class (either class 0 or class 1).
+         sparse_categorical_crossentropy is particularly useful when we have a lot of classes, as it saves memory by not having to one-hot encode the class labels.
+
+      Weights/Biases Intializers:
+         * glorot_uniform: The Glorot Uniform initializer, short for “Glorot Uniform,” is an initializer used to initialize the weights of a neural network. Glorot Uniform is a variant of the Uniform initializer that is used to initialize the weights of a neural network.
+         * he_normal: The He Normal initializer, short for “He Normal,” is an initializer used to initialize the weights of a neural network. He Normal is a variant of the Normal initializer that is used to initialize the weights of a neural network.
+         * he_uniform: The He Uniform initializer, short for “He Uniform,” is an initializer used to initialize the weights of a neural network. He Uniform is a variant of the Uniform initializer that is used to initialize the weights of a neural network.
+         * lecun_normal: The Lecun Normal initializer, short for “Lecun Normal,” is an initializer used to initialize the weights of a neural network. Lecun Normal is a variant of the Normal initializer that is used to initialize the weights of a neural network.
+         * lecun_uniform: The Lecun Uniform initializer, short for “Lecun Uniform,” is an initializer used to initialize the weights of a neural network. Lecun Uniform is a variant of the Uniform initializer that is used to initialize the weights of a neural network.
+         * normal: The Normal initializer, short for “Normal,” is an initializer used to initialize the weights of a neural network. Normal is a variant of the Uniform initializer that is used to initialize the weights of a neural network.
+         * ones: The Ones initializer, short for “Ones,” is an initializer used to initialize the weights of a neural network. Ones is a variant of the Uniform initializer that is used to initialize the weights of a neural network.
+         * random_normal: The Random Normal initializer, short for “Random Normal,” is an initializer used to initialize the weights of a neural network. Random Normal is a variant of the Normal initializer that is used to initialize the weights of a neural network.
+         * random_uniform: The Random Uniform initializer, short for “Random Uniform,” is an initializer used to initialize the weights of a neural network. Random Uniform is a variant of the Uniform initializer that is used to initialize the weights of a neural network.
+         * uniform: The Uniform initializer, short for “Uniform,” is an initializer used to initialize the weights of a neural network. Uniform is a variant of the Uniform initializer that is used to initialize the weights of a neural network.
+
+         Collaborative filtering (CF):
+         * Method to predict a rating for a user-item pair based on the
+         history of ratings given by the user and given to the item
+         * Most CF algorithms are based on user-item rating matrix
+         where each row represents a user, each column an item
+         – Entries of this matrix are ratings given by users to items
+         * The user-item rating matrix is typically sparse, meaning that most entries are missing (unknown) since users typically only rate a small fraction of available items.
+
+         Restricted Boltzmann Machines (RBMs):
+         RBMs are modeled after energy models from the physics domain. The probability that the model assigns to a visible vector (v0) involves a calculation that sums over all the possible hidden vectors(h0s). As you can imagine, when you potentially have millions of features for your visible layer, for computation purposes, this very quickly becomes impractical to carry out.
+         Thus, we use an approximation technique tf.random.uniform() computes probability approximations using a method called Gibbs sampling.
+         ```python
+         def hidden_layer(v0_state, W, hb):
+            # probabilities of the hidden units
+            h0_prob = tf.nn.sigmoid(tf.matmul([v0_state], W) + hb)
+            # sample_h_given_X
+            h0_state = tf.nn.relu(tf.sign(h0_prob - tf.random.uniform(tf.shape(h0_prob))))
+            return h0_state
+         ```
+         1. `h0_prob` is a tensor that represents the probabilities of a certain state in the hidden layer of a neural network.
+         2. `tf.random.uniform(tf.shape(h0_prob))` generates a tensor with the same shape as h0_prob filled with random values ranging from 0 to 1.
+         3. `h0_prob - tf.random.uniform(tf.shape(h0_prob))` subtracts the random tensor from the h0_prob tensor. The result is a tensor of the same shape with values that can be positive (if the corresponding value in h0_prob was larger) or negative (if it was smaller).
+         4. `tf.sign(...)` takes the sign of each value in the tensor. This results in a tensor of the same shape filled with -1's (for negative values), 0's (for zeros), and 1's (for positive values).
+         5. `tf.nn.relu(...)`  applies the Rectified Linear Unit (ReLU) function to the result tensor. The ReLU function sets all negative values to 0, effectively binarizing the state of each neuron in the hidden layer.
+         So, the line of code is generating a binary state of neurons based on their probabilities. The neurons with a probability greater than a random value will be activated (set to 1), while the neurons with a probability less than the random value will be deactivated (set to 0).
+
+         In other words, contrastive divergence method allows us to switch on and off hidden state neurons so that we use there state output to reconstruct the inputs.
+
+         * RBM is an unsupervised learning model that can be used for feature learning and unsupervised pre-training of deep neural networks.
+         * It can be used to train deep neural networks, as well as to generate new data samples.
+
+         Image Data Types:
+         uint8 has 2^8=256 values 0 to 255, its why the pixel values are 0 to 255thus its a strictly positive number up too 8 bits meaning we have numbers starting at zero ending at 255 (256 numbers)
+         
+         ```python
+         #Converting numeric to image:
+         import matplotlib.pyplot as plt
+         float_images = [np.array(img).astype(np.uint8) for img in resized_imgs]
+         plt.imshow(float_images[0], cmap='gray');
+         ```
+
+         Convolutional Neural Networks (CNNs):
+         In Convolutional Neural Networks (CNNs), filters are initially often initialized with small random numbers. The specific method of initialization can vary. Some common methods include:
+         Glorot/Xavier Initialization: This is a method that initializes the weights with a normal distribution centered on 0 and with variance based on the number of input and output neurons. This method is designed to keep the scale of the gradients roughly the same in all layers.
+         He Initialization: This is a variant of Glorot/Xavier Initialization, designed specifically for ReLU (Rectified Linear Unit) activation functions. It's similar to Glorot/Xavier Initialization but takes into account that ReLU neurons can be inactive for half of the inputs.
+         Random Initialization: This method involves initializing the weights with small random numbers. In TensorFlow, this can be done with tf.random_normal or tf.truncated_normal. The initialization method can have a significant impact on the speed of training and the final performance of the network. Poor initialization can lead to problems such as vanishing/exploding gradients, which can slow down training or cause it to fail entirely.
+
+         Classification:
+         Multiclass classification means a classification task with more than two classes; e.g., classify a set of images of fruits which may be oranges, apples, or pears. Multiclass classification makes the assumption that each sample is assigned to one and only one label: a fruit can be either an apple or a pear but not both at the same time.
+         Multilabel classification assigns to each sample a set of target labels. This can be thought of as predicting properties of a data-point that are not mutually exclusive, such as topics that are relevant for a document. A text might be about any of religion, politics, finance or education at the same time or none of these.
+
+         * Multi-class vs Binary-class is the question of the number of classes your classifier is modeling. In theory, a binary classifier is much simpler than multi-class problem, so it's useful to make this distinction. For example, Support Vector Machines (SVMs) can trivially learn a hyperplane to separate two classes, but 3 or more classes make the classification problem much more complicated. In the neural networks, we commonly use Sigmoid for binary, but Softmax for multi-class as the last layer of the model.
+
+         * Multi-label vs Single-Label is the question of how many classes any object or example can belong to. In the neural networks, if we need single label, we use a single Softmax layer as the last layer, thus learning a single probability distribution that spans across all classes. If we need multi-label classification, we use multiple Sigmoids on the last layer, thus learning separate distribution for each class.
+
 
    #### Miscellaneous Code:
     ```python
@@ -609,6 +684,23 @@
    best_parameters = grid_search.best_params_ 
    best_accuracy = grid_search.best_score_
 
+   #Correct way for setting a seed and placing the model on a specific processor
+   tf.keras.backend.clear_session()
+   np.random.seed(42)
+   tf.random.set_seed(42)
+
+   with tf.device('CPU'):
+      # Create the Keras Sequential model
+      nn_model = tf.keras.models.Sequential()
+      
+      # Set input nodes to the number of features
+      input_nodes = len(X.columns)
+      
+      # Add our first Dense layer, including the input layer
+      nn_model.add(tf.keras.layers.Dense(units=1, activation="relu", input_dim=input_nodes))
+      
+      # Add the output layer that uses a probability activation function
+      nn_model.add(tf.keras.layers.Dense(units=1, activation="sigmoid"))
     ```
 
 ### Applications:
