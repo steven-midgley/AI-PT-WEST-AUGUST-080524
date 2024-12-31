@@ -618,6 +618,14 @@
          He Initialization: This is a variant of Glorot/Xavier Initialization, designed specifically for ReLU (Rectified Linear Unit) activation functions. It's similar to Glorot/Xavier Initialization but takes into account that ReLU neurons can be inactive for half of the inputs.
          Random Initialization: This method involves initializing the weights with small random numbers. In TensorFlow, this can be done with tf.random_normal or tf.truncated_normal. The initialization method can have a significant impact on the speed of training and the final performance of the network. Poor initialization can lead to problems such as vanishing/exploding gradients, which can slow down training or cause it to fail entirely.
 
+         Classification:
+         Multiclass classification means a classification task with more than two classes; e.g., classify a set of images of fruits which may be oranges, apples, or pears. Multiclass classification makes the assumption that each sample is assigned to one and only one label: a fruit can be either an apple or a pear but not both at the same time.
+         Multilabel classification assigns to each sample a set of target labels. This can be thought of as predicting properties of a data-point that are not mutually exclusive, such as topics that are relevant for a document. A text might be about any of religion, politics, finance or education at the same time or none of these.
+
+         * Multi-class vs Binary-class is the question of the number of classes your classifier is modeling. In theory, a binary classifier is much simpler than multi-class problem, so it's useful to make this distinction. For example, Support Vector Machines (SVMs) can trivially learn a hyperplane to separate two classes, but 3 or more classes make the classification problem much more complicated. In the neural networks, we commonly use Sigmoid for binary, but Softmax for multi-class as the last layer of the model.
+
+         * Multi-label vs Single-Label is the question of how many classes any object or example can belong to. In the neural networks, if we need single label, we use a single Softmax layer as the last layer, thus learning a single probability distribution that spans across all classes. If we need multi-label classification, we use multiple Sigmoids on the last layer, thus learning separate distribution for each class.
+
 
    #### Miscellaneous Code:
     ```python
