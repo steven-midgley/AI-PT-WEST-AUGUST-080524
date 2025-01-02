@@ -1,7 +1,9 @@
 # Create a variable and set it as a list
-
+list_of_things = ["first thing", 2, "third stuff"]
+print(list_of_things)
 
 # Methods for accessing parts of a list
+print(list_of_things[:1])
 
 # Return the value of a list at a given index
 
