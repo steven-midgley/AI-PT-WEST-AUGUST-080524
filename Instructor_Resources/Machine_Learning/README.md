@@ -717,10 +717,98 @@
 
 
 ### NLP
+   ```python
+   1. Tokenize
+   2. Lower case all tokens
+   3. Remove stop words
+   4. Stem the tokens
+   5. Lemmatize the tokens
+   ```
+   #### Tokenization:
+      * Sentence Tokenization is best for:
 
+      Document summarization - when you need to identify and extract key sentences
+      Question-answering systems - to break down long documents into manageable units for finding relevant answers
+      Machine translation - many translation systems work better when processing one sentence at a time
+      Readability analysis - calculating metrics like average sentence length
+      Topic segmentation - identifying where topics change across sentence boundaries
+
+      * Word Tokenization is better for:
+
+      Text classification - when you need word frequencies or bag-of-words features
+      Sentiment analysis - analyzing individual words and their emotional content
+      Named Entity Recognition - identifying person names, locations, organizations
+      Part-of-speech tagging - since this works at the word level
+      Building word embeddings - creating vector representations of individual words
+      Spelling correction and text normalization
+
+      * Both:
+      This maintains both sentence-level context and word-level detail, which is crucial for many advanced NLP tasks like dependency parsing or coreference resolution.
+
+   #### Stemming vs Lemmatization
+      * Use Stemming when:
+         Speed is important
+         You need rough matching (like in search engines)
+         Exact dictionary words aren't necessary
+
+      * Use Lemmatization when:
+         Accuracy is important
+         You need real, meaningful words
+         You're doing semantic analysis
+         You have the computational resources available
+
+   #### N-grams:
+      N-grams are sequences of n consecutive items (usually words or characters) from a text. They're used to capture patterns and context in language. Let me explain their main uses:
+
+      1. Language Modeling and Prediction
+      2.Feature Generation for Machine Learning
+         Text classification
+         Sentiment analysis
+         Authorship attribution
+      3. Plagiarism Detection
+         Compare n-gram overlap between documents
+         Longer n-grams (3-5 words) work well for this
+      4. Machine Translation
+         Help maintain phrase context
+         Improve translation quality
+      5. Information Retrieval
+      Search engines use n-grams for:
+         Query suggestion
+         Spell checking
+         Finding similar documents
+
+      Common n-gram sizes:
+      Unigrams (n=1): Individual words
+      Bigrams (n=2): Two consecutive words
+      Trigrams (n=3): Three consecutive words
+
+      Character n-grams: Used for:
+      Handling misspellings
+      Working with languages without clear word boundaries
+      Dealing with social media text
+
+      The choice of n depends on your task:
+      Larger n captures more context but needs more data
+      Smaller n is more flexible but might miss important patterns
+
+* [Part of Speech Tagging](https://en.wikipedia.org/wiki/Buffalo_buffalo_Buffalo_buffalo_buffalo_buffalo_Buffalo_buffalo)   
+* [Advanced LLM Tokenization(BPE)](https://tiktokenizer.vercel.app/)
+* [RNN Explanation for Language Modelling](http://karpathy.github.io/2015/05/21/rnn-effectiveness/)
+* [Tabulating Text Data Techniques](https://skrub-data.org/stable/auto_examples/02_text_with_string_encoders.html)
 
 ### Large Language Models
 [LLMops Database](https://www.zenml.io/llmops-database)
+   #### Definitions:
+      * Temperature:
+      Temperature controls the degree of randomness in token selection. Higher temperatures result in a higher number of candidate tokens from which the next output token is selected, and can produce more diverse results, while lower temperatures have the opposite effect, such that a temperature of 0 results in greedy decoding, selecting the most probable token at each step.
+      Temperature doesn't provide any guarantees of randomness, but it can be used to "nudge" the output somewhat.
+
+      * Top-K and top-P: 
+      Like temperature, top-K and top-P parameters are also used to control the diversity of the model's output.
+      Top-K is a positive integer that defines the number of most probable tokens from which to select the output token. A top-K of 1 selects a single token, performing greedy decoding.
+      Top-P defines the probability threshold that, once cumulatively exceeded, tokens stop being selected as candidates. A top-P of 0 is typically equivalent to greedy decoding, and a top-P of 1 typically selects every token in the model's vocabulary.
+      When both are supplied, the Gemini API will filter top-K tokens first, then top-P and then finally sample from the candidate tokens using the supplied temperature.
+
 
 ### LLM Explainability
 
@@ -746,4 +834,8 @@ def tokenize_word(word, merges, vocabulary, charset, unk_token="<UNK>"):
 * [Skin Cancer Detection](https://huggingface.co/spaces/kkruel/skin_cancer_detection_ai)
 * [Data Science Tool](https://cgdproject3.streamlit.app/)
 * [Video Meeting Summarizer](https://ai-project-3-meeting-summarizer-rttvfhl39dwghbbhc4ywan.streamlit.app/)
+
+
+### Future Course:
+*[ Mining Massive Datasets - Stanford University](https://www.youtube.com/playlist?list=PLLssT5z_DsK9JDLcT8T62VtzwyW9LNepV1)
 
