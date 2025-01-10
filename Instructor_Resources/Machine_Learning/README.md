@@ -701,6 +701,10 @@
       
       # Add the output layer that uses a probability activation function
       nn_model.add(tf.keras.layers.Dense(units=1, activation="sigmoid"))
+
+   #Initialize an Embeddings layer on your own:
+   initializer = tf.initializers.RandomUniform(minval=-0.05, maxval=0.05)  
+   embedding_layer = tf.keras.layers.Embedding(input_dim=5000, output_dim=64, embeddings_initializer=initializer)  
     ```
 
 ### Applications:
@@ -791,13 +795,35 @@
       Larger n captures more context but needs more data
       Smaller n is more flexible but might miss important patterns
 
+      #### Word Embeddings:
+      Word embeddings are dense vector representations of words that capture semantic relationships between words. They're used to capture the meaning of words and their context in a machine learning model. Here are some common types of word embeddings:
+
+      * GloVe is a word embedding technique that uses a distributed representation of words based on their context. It's based on the co-occurrence of words in a corpus.
+      * FastText is a word embedding technique that uses a neural network to learn word representations. It's based on the skip-gram model.
+      * BERT is a transformer-based language model that uses a pre-trained word embedding layer. It's
+      a transformer-based model that uses a pre-trained word embedding layer. It's a powerful model for text generation and language modeling.
+      * Word2Vec is a popular word embedding technique that uses a neural network to learn word representations. It's based on the skip-gram model.
+
+      #### Topic Modelling:
+      * LDA is a probabilistic model. It assumes that documents are a mixture of topics and that each word in the document is attributable to one of the document's topics. In this model, the sum of topic probabilities for a given document equals 1 because it represents the total probability distribution of topics for that document. In other words, it shows how likely each topic is to be relevant to the document.
+      * NMF, on the other hand, is a linear algebraic model, based on factorizing the (non-negative) document-term matrix into the product of 2 lower-dimensional matrices. It does not have the same probabilistic interpretation as LDA. The components obtained from NMF represent parts of the original features, not probabilities, hence they don't have to sum up to 1.
+      Original features are our TF-IDF per token per document.
+
 * [Part of Speech Tagging](https://en.wikipedia.org/wiki/Buffalo_buffalo_Buffalo_buffalo_buffalo_buffalo_Buffalo_buffalo)   
 * [Advanced LLM Tokenization(BPE)](https://tiktokenizer.vercel.app/)
 * [RNN Explanation for Language Modelling](http://karpathy.github.io/2015/05/21/rnn-effectiveness/)
 * [Tabulating Text Data Techniques](https://skrub-data.org/stable/auto_examples/02_text_with_string_encoders.html)
 
 ### Large Language Models
-[LLMops Database](https://www.zenml.io/llmops-database)
+* [LLMops Database](https://www.zenml.io/llmops-database)
+* [Transformers Intro](https://www.youtube.com/watch?v=XfpMkf4rD6E)
+* [Learn about GPTs (Low Code)](https://spreadsheets-are-all-you-need.ai/index.html#watch-the-lessons)
+* [Gemini](https://github.com/google/generative-ai-docs/blob/main/site/en/gemini-api/docs/get-started/python.ipynb)
+* [Goodle Gemini Docs](https://ai.google.dev/gemini-api/docs/get-started/python)
+* [RAGs Using Streamlit](https://discuss.streamlit.io/t/april-16-livestream-advanced-rag-techniques/66368?utm_medium=email&_hsenc=p2ANqtz-_KgvGJdvx1Z47zCXIYPSmD4NTwvLdf0mOfkZR9d40BNWX8UI5QBdnRxkEZF7IU89qz6M2xIjCrDDUvqRtnwbuuFDCaxg&_hsmi=304169172&utm_content=304169172&utm_source=hs_email)
+* [Gradio Web Apping your LLM](https://huggingface.co/blog/gradio-reload)
+* [Comparing GPT-3.5 & GPT-4](https://techcommunity.microsoft.com/t5/ai-azure-ai-services-blog/comparing-gpt-3-5-amp-gpt-4-a-thought-framework-on-when-to-use/ba-p/4088645?lightbox-message-images-4088645=562554iA575A42840947885)
+* [Open Vision Language Model](https://huggingface.co/blog/paligemma)
    #### Definitions:
       * Temperature:
       Temperature controls the degree of randomness in token selection. Higher temperatures result in a higher number of candidate tokens from which the next output token is selected, and can produce more diverse results, while lower temperatures have the opposite effect, such that a temperature of 0 results in greedy decoding, selecting the most probable token at each step.
@@ -809,8 +835,39 @@
       Top-P defines the probability threshold that, once cumulatively exceeded, tokens stop being selected as candidates. A top-P of 0 is typically equivalent to greedy decoding, and a top-P of 1 typically selects every token in the model's vocabulary.
       When both are supplied, the Gemini API will filter top-K tokens first, then top-P and then finally sample from the candidate tokens using the supplied temperature.
 
+      * Top-K and top-P are mutually exclusive. If both are supplied, the model will filter top-K tokens first, then top-P and then finally sample from the candidate tokens using the supplied temperature.
+
+      * Some commonly used similarity measures are Euclidean distance, cosine similarity, and the Pearson correlation coefficient.
+         * Euclidean distance: Measures the distance between two data points in a multidimensional space and determines which objects are similar or dissimilar. The closer and more similar two objects are, the smaller the Euclidean distance between them.
+         * Cosine similarity: Measures the cosine of the angle between two vectors in a multidimensional space and takes on a value ranging between -1.0 and 1.0. If the angle between two vectors is small, then they are quite close together spatially, and the value of the cosine similarity will be close to 1.
+         * Pearson correlation coefficient: In a previous module, you learned about this coefficient, which measures the linear correlation between two variables. Like cosine similarity, the Pearson correlation coefficient can take on values ranging between -1.0 and 1.0. 
+         When calculating the value of the Pearson correlation coefficient for two variables, the closer the number is to 1, the more closely correlated or similar they are considered to be.
+      In the context of text analysis (where negative values are usually not applicable because text data is often represented in non-negative vectors), the cosine similarity ranges from 0 to 1.
+      ```python
+      import math  
+      '''
+      dot_product function computes the dot product of two vectors.
+      magnitude function computes the magnitude (or length) of a vector.
+      cosine_similarity function computes the cosine similarity of two vectors by dividing the dot product of the vectors by the product of their magnitudes.
+      '''
+      def dot_product(v1, v2):  
+      return sum(map(lambda x: x[0] * x[1], zip(v1, v2)))  
+
+      def magnitude(vector):  
+      return np.sqrt(dot_product(vector, vector))  
+
+      def cosine_similarity(v1, v2):  
+      return dot_product(v1, v2) / (magnitude(v1) * magnitude(v2))  
+    ```
+
 
 ### LLM Explainability
+
+* [Tokenization Explainer](https://tiktokenizer.vercel.app/)
+   - [Full Lectures](https://github.com/karpathy/minbpe/tree/master)
+* [Transformers Explainer](https://poloclub.github.io/transformer-explainer/)
+   - [Demo](https://www.youtube.com/watch?v=ECR4oAwocjs)
+* [Another GPT Explainer](https://bbycroft.net/llm)
 
    #### BytePerEncoding
 ```python
