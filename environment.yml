@@ -1,7 +1,6 @@
 name: boot_camp
 channels:
   - conda-forge
-  - defaults
   - apple
 dependencies:
   - python=3.9
@@ -11,4 +10,5 @@ dependencies:
   - numpy
   - requests
   - pillow
+  - sentence-transformers
   - ipykernel
