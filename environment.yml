@@ -12,3 +12,5 @@ dependencies:
   - pillow
   - sentence-transformers
   - ipykernel
+  - transformers
+  - tf-keras
